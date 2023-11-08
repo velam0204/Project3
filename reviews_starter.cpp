@@ -35,6 +35,14 @@ using namespace std;
 //   weights - An "output parameter", passed by reference, into which the weights are stored.
 void readKeywordWeights(istream &input, vector<string> &keywords, vector<double> &weights) {
     // TODO: Write an implementation for this function!
+    string word;
+    double tempweight;
+
+     while(input >> word >> tempweight) {
+        keywords.push_back(word);
+        weights.push_back(tempweight);
+    }
+   // input.close();
 }
 
 // Reads in a review from an input stream and stores each individual word from the review
@@ -45,6 +53,11 @@ void readKeywordWeights(istream &input, vector<string> &keywords, vector<double>
 //   reviewWords - An "output parameter", passed by reference, into which the review words are stored.
 void readReview(istream &input, vector<string> &reviewWords) {
     // TODO: Write an implementation for this function!
+    string word;
+    while(input >> word) {
+        reviewWords.push_back(word);
+    }
+
 }
 
 // Returns the weight of a given word by looking it up in the provided vectors.
@@ -57,6 +70,16 @@ void readReview(istream &input, vector<string> &reviewWords) {
 //   weights - A vector containing weights corresponding to each keyword.
 double wordWeight(const string &word, const vector<string> &keywords, const vector<double> &weights) {
     // TODO: Write an implementation for this function!
+    for(size_t i = 0 ; i < keywords.size(); ++i ){
+        if (word == keywords.at(i)) {
+            return weights.at(i);
+        }
+        else {
+            return 0.0;
+    }
+
+    }
+    
 }
 
 
@@ -75,18 +98,18 @@ double wordWeight(const string &word, const vector<string> &keywords, const vect
 //   weights - A vector containing weights corresponding to each keyword.
 double reviewScore(const vector<string> &reviewWords, const vector<string> &keywords, const vector<double> &weights) {
     // TODO: Write an implementation for this function!
+    vector<string> copy = reviewWords;
+    preprocessReview(copy);
+    double wordtotal;
+    for(size_t i = 0 ; i < copy.size();++i){
+        
+        wordtotal += wordWeight(copy.at(i),keywords,weights);
+    }
+    return wordtotal;
 }
 
 
 
-
-
-
-
-
-
-
-// -------------------- !!! *** DO NOT MODIFY ANY CODE BELOW THIS LINE *** !!! --------------------
 
 
 

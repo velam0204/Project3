@@ -49,78 +49,93 @@ int main(){
     vector<double> weights;
     readKeywordWeights(KeywordWeight, keywords, weights);
 
-   struct reviews {
-        int reviewnumber;
-        double reviewScore;
-        string category;
-    };
-   vector <reviews> Indreview;
+   //struct reviews {
+    //    int reviewnumber;
+    //   double reviewScore;
+    //    string category;
+    //};
+   //vector <reviews> Indreview;
     int NumofTruth = 0;
-   int NumofDecep = 0;
-   int NumofUncat = 0;
+    int NumofDecep = 0;
+    int NumofUncat = 0;
+    string category;
     int i = 0;
+    double maxtemreviewscore = 0;
+    double mintemreviewscore = 0;
+    int index_of_max = 0;
+    int index_of_min = 0;
+    ofstream file ("report.txt");
+    file << "review score category" << endl;
+    double score;
+
 
    for(i; i<= 99; i++){
     
        string filename = makeReviewFilename(i);
        ifstream hotelreview (filename);
+       if (! hotelreview.is_open()){
+        break;   
+        }
         vector<string> reviewWords;
         readReview(hotelreview, reviewWords);
-        if(reviewWords.at(i).empty()){
-            break;
-        }
-        Indreview.at(i).reviewScore = reviewScore(reviewWords,keywords, weights);
-        if(Indreview.at(i).reviewScore > SCORE_LIMIT_TRUTHFUL){
-            Indreview.at(i).category = "truthful";
-        }
-        if(Indreview.at(i).reviewScore < SCORE_LIMIT_DECEPTIVE){
-            Indreview.at(i).category = "deceptive";
-        }
-        else{
-            Indreview.at(i).category = "uncategorized";
-        }
-        Indreview.at(i).reviewnumber = i;
-        
-   }
-   int index_of_max = 0;
-   for (int j = 0; j < Indreview.size(); ++j){
-     if(Indreview.at(j).reviewScore > Indreview.at(index_of_max).reviewScore){
-        index_of_max = j;
-     }
-   }
-   int index_of_min = 0;
-   for (int j = 0; j < Indreview.size(); ++j){
-     if(Indreview.at(j).reviewScore > Indreview.at(index_of_min).reviewScore){
-        index_of_min = j;
-     }
-   }
-    int totalnumreviewed = i + 1;
-    for(size_t j = 0; j <Indreview.size(); ++j) {
-        if(Indreview.at(j).category == "truthful"){
+        score = reviewScore(reviewWords,keywords, weights);
 
+
+        if (score > SCORE_LIMIT_TRUTHFUL){
+            category = "truthful";
+            NumofTruth += 1;
+        }
+        if (score < SCORE_LIMIT_DECEPTIVE){
+            category = "deceptive";
+            NumofDecep +=1;
+        }
+        else if (score <= SCORE_LIMIT_TRUTHFUL && score >= SCORE_LIMIT_DECEPTIVE){
+            category = "uncategorized";
+            NumofUncat +=1;
+        }
+
+        if (score > maxtemreviewscore){
+            maxtemreviewscore = score;
+            index_of_max = i;
+        }
+        if (score < mintemreviewscore){
+            mintemreviewscore = score;
+            index_of_min = i;
+        }
+
+
+        file << i << " " << score << " " << category << endl;
+
+
+
+
+        //if(reviewWords.at(i).empty()){
+        //    break;
+        //}
+        //Indreview.at(i).reviewScore = reviewScore();
+        //if(Indreview.at(i).reviewScore > SCORE_LIMIT_TRUTHFUL){
+        //    Indreview.at(i).category = "truthful";
+        //}
+        //if(Indreview.at(i).reviewScore < SCORE_LIMIT_DECEPTIVE){
+        //    Indreview.at(i).category = "deceptive";
+        //}
+        //else{
+        //    Indreview.at(i).category = "uncategorized";
+        //}
+        //Indreview.at(i).reviewnumber = i;
+        //Indreview.push_back(review);
         
-        NumofTruth += 1;
-        }
-        if(Indreview.at(j).category == "deceptive"){
-            NumofDecep += 1;
-        }
-        else {
-            NumofUncat += 1;
-        }
-    }
-    ofstream file ("report.txt");
-    cout << "review score category" << endl;
-    for(size_t j = 0; j < Indreview.size(); ++j){
-        cout << Indreview.at(j).reviewnumber << " "<< Indreview.at(j).reviewScore << " " << Indreview.at(j).category << endl;
-    }
- cout << "/n" ;
- cout << "Number of reviews: " << totalnumreviewed << endl;
- cout << "Number of truthful reviews: " << NumofTruth << endl;
- cout << "Number of deceptive reviews: " << NumofDecep << endl;
- cout << "Number of uncategorized reviews: " << NumofUncat << endl;
- cout << "/n" ;
- cout << "review with highest score: " << index_of_max << endl;
- cout << "review with lowest score: " << index_of_min << endl;
+   }
+    file << "" << endl;
+    file << "Number of reviews: " << i << endl;
+    file << "Number of truthful reviews: " << NumofTruth << endl;
+    file << "Number of deceptive reviews: " << NumofDecep << endl;
+    file << "Number of uncategorized reviews: " << NumofUncat << endl << endl;
+    file << "review with highest score: " << index_of_max << endl;
+    file << "review with lowest score: " << index_of_min << endl;
+    file.close();
+
+ 
     // TODO: implement the main program
 
 }

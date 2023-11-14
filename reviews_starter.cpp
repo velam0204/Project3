@@ -74,11 +74,10 @@ double wordWeight(const string &word, const vector<string> &keywords, const vect
         if (word == keywords.at(i)) {
             return weights.at(i);
         }
-        else {
-            return 0.0;
+            
     }
 
-    }
+    return 0.0;
     
 }
 
